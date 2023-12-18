@@ -1,0 +1,46 @@
+/* Models.css */
+.card {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card:hover .overlay {
+    opacity: 1;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-align: center;
+  }
+  
+  .overlay button {
+    display: none;
+  }
+  
+  .card:hover .overlay button {
+    display: block;
+  }
+  
+  .card:hover .overlay p {
+    display: block;
+  }
+  
+  .overlay p {
+    display: none;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .card-img-top {
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover .card-img-top {
+    transform: scale(1.1);
+  }
+  
