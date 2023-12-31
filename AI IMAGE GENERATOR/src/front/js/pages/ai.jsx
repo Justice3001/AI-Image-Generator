@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Navbar from "../component/nav";
+import Navbar from '../component/nav';
 import girl from "../../../../public/assests/girl.webp";
 import boat from "../../../../public/assests/boat.webp";
 
-const Model1 = () => {
+const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
   const [generatedImage, setGeneratedImage] = useState(null);
   const [error, setError] = useState(null);
@@ -12,6 +12,8 @@ const Model1 = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [additionalText, setAdditionalText] = useState("");
   const [isLoading, setLoading] = useState(false); // Added loading state
+  const [generationTime, setGenerationTime] = useState(null);
+
 
   const predeterminedPrompts = [
     "a quasar forms at the end of a long hallway + liminal space + hyperrealistic + unreal engine",
@@ -60,7 +62,8 @@ const Model1 = () => {
     "hyper-photorealistic one floor house interior looking like a manta ray in Tokyo city settings, living room, stair, art nouveau, white, wood, parametric pattern, colorful , art highly detailed, fine details, hyper quality, trending on artstation, award-winning, megapixel, elegant, high quality, de-noise, post-processing, post-production, ultra-wide angle lens, wide angle view, super resolution, megapixel, DSLR, Nikon D750, shot on 70mm, lens, distortion, F/22, shutter speed 1/1000, long exposure, sharpened, photoshopped, vibrant colors, 32K resolution, sharp details, octane render, vray engine, unreal engine 5",
     "modern living room ceiling, wood patterns, organic classic, ornamental, fractal, koch lines, indirect lighting",
     "interiors of a modern beauty and wellness healthcare, futuristic, wood, architectural awards, intricate details, minimalistic, as designed by (ARTIST NAME), ultra realistic, high details, vray, hd, 8k",
-    "parametric voronoi dedign bedroom, bed headboard continue with the ceiling",
+    "parametric voronoi dedign bedroom, bed headboard continue with the ceiling"
+    
   ];
 
   const generateRandomPrompt = () => {
@@ -68,119 +71,121 @@ const Model1 = () => {
     setPrompt(predeterminedPrompts[randomIndex]);
   };
 
+
   const generateImage = async () => {
-    const api_key = "SG_e78b3fa8222cf3a3";
-    const url = "https://api.segmind.com/v1/sdxl1.0-timeless";
-    setLoading(true); // Set loading to true when generating image
+    const api_key = 'SG_b7bb2a720c61dc53'; // Update this line with your new API key
+    const url = 'https://api.segmind.com/v1/ssd-1b'; // Updated URL
+    const startTime = performance.now(); // Record start time
+    setLoading(true);
 
     // Request payload
     const data = {
       prompt: prompt,
-      negative_prompt:
-        "(worst quality, low quality:1.4), signature, artist name, text, web address, logo, error, cropped, artifacts, watermark, username, blurry, collage, grid, lens, camera lens, car, truck, road, fat, obese, armor, badges, patches, usa, nasa",
+      negative_prompt: 'scary, cartoon, painting', // Adjust this according to your needs
       samples: 1,
-      scheduler: "UniPC",
+      scheduler: 'UniPC',
       num_inference_steps: 25,
-      guidance_scale: "7",
-      seed: "1502673077",
-      img_width: "1024",
-      img_height: "1024",
+      guidance_scale: 9,
+      seed: 36446545871,
+      img_width: 1024,
+      img_height: 1024,
       base64: false,
     };
 
     try {
       const response = await axios.post(url, data, {
         headers: {
-          "Content-Type": "application/json",
-          "x-api-key": api_key,
+          'Content-Type': 'application/json',
+          'x-api-key': api_key,
         },
-        responseType: "arraybuffer", // specify the expected response type as arraybuffer
+        responseType: 'arraybuffer',
       });
 
       // Convert the array buffer to base64
       const base64Image = btoa(
         new Uint8Array(response.data).reduce(
           (data, byte) => data + String.fromCharCode(byte),
-          ""
+          ''
         )
       );
 
       setGeneratedImage(`data:image/jpeg;base64,${base64Image}`);
-      setError(null); // Reset error state if the request is successful
+      setError(null);
     } catch (error) {
       setError(`Error while fetching Gen AI model API: ${error.message}`);
     } finally {
-      setLoading(false); // Set loading to false when the request is complete
+      const endTime = performance.now(); // Record end time
+      const elapsedTime = endTime - startTime; // Calculate elapsed time in milliseconds
+      setGenerationTime(elapsedTime); // Set the elapsed time in the state
+      setLoading(false);
     }
   };
+  
+  
+  
+  
 
-  const handleDownload = () => {
+const handleDownload = () => {
     const link = document.createElement("a");
     link.href = generatedImage;
     link.download = "generated_image.jpg";
     link.click();
-  };
+};
+
 
   const handleCardButtonClick = (cardNumber) => {
     let cardContent = "";
     let additionalTextForCard = "";
-
+  
     switch (cardNumber) {
       case 1:
-        cardContent =
-          "LINE ART, An elegant woman in a 1920s flapper dress, pearls, and a feathered headband, capturing the Roaring Twenties, sleek black lines on a champagne paper, 2D sketched, stylish and ornate, jazz club in the backdrop, lively and decadent, reminiscent of Art Deco, chic, the Jazz Age embodied, detailed depiction of sequins and fringes, ornate backdrop, figure in a dynamic pose, emphasis on fashion, intricate, celebratory, golden age, graphic, precision in detailing, gleaming chandeliers above.";
-        additionalTextForCard =
-          "Negative Prompt(Prompts to exclude, eg. 'bad anatomy, bad hands, missing fingers'):scary, cartoon, painting ";
+        cardContent = "LINE ART, An elegant woman in a 1920s flapper dress, pearls, and a feathered headband, capturing the Roaring Twenties, sleek black lines on a champagne paper, 2D sketched, stylish and ornate, jazz club in the backdrop, lively and decadent, reminiscent of Art Deco, chic, the Jazz Age embodied, detailed depiction of sequins and fringes, ornate backdrop, figure in a dynamic pose, emphasis on fashion, intricate, celebratory, golden age, graphic, precision in detailing, gleaming chandeliers above.";
+        additionalTextForCard = "Negative Prompt(Prompts to exclude, eg. 'bad anatomy, bad hands, missing fingers'):scary, cartoon, painting ";
         break;
       case 2:
-        cardContent =
-          "Seaside Town, clay boats bobbing on the gentle waves, fisherfolk mending nets, seagulls overhead, captured in Craft Clay style.";
+        cardContent = "Seaside Town, clay boats bobbing on the gentle waves, fisherfolk mending nets, seagulls overhead, captured in Craft Clay style.";
         additionalTextForCard = "Additional text for Card 2."; // boat
         break;
       case 3:
-        cardContent =
-          "STICKER, An energetic portrayal of a dancing cactus with a sombrero, amidst a desert sunset, warm twilight glow, summer festival 2024, gradient orange to purple hues, 3D digital drawing, cheerful and vibrant, desert fiesta theme, cartoon shading, glittering sand effect, using Autodesk SketchBook, sticker, 2D animated, lively desert, vector illustration, 2D front view, spotlighted by the setting sun, by Hayao Miyazaki, playful, bright, festive, graphic, outlined edges, vector design.";
+        cardContent = "STICKER, An energetic portrayal of a dancing cactus with a sombrero, amidst a desert sunset, warm twilight glow, summer festival 2024, gradient orange to purple hues, 3D digital drawing, cheerful and vibrant, desert fiesta theme, cartoon shading, glittering sand effect, using Autodesk SketchBook, sticker, 2D animated, lively desert, vector illustration, 2D front view, spotlighted by the setting sun, by Hayao Miyazaki, playful, bright, festive, graphic, outlined edges, vector design.";
         additionalTextForCard = "Additional text for Card 3."; //catus
         break;
       case 4:
-        cardContent =
-          "Fox, orange and white paper, pointed ears, curled tail, sly expression with sharp folded eyes.";
+        cardContent = "Fox, orange and white paper, pointed ears, curled tail, sly expression with sharp folded eyes.";
         additionalTextForCard = "Additional text for Card 4."; //fox
         break;
       // Add more cases for additional cards if needed
       case 5:
-        cardContent =
-          "Enchanted Library, a mysterious girl with flowing hair, reading an ancient tome, surrounded by floating books, illuminating runes, and curious magical creatures, depicted in Anime style, with soft, radiant glows, intricately patterned magical symbols, and the girl's expressive eyes capturing a sense of wonder.";
+        cardContent = "Enchanted Library, a mysterious girl with flowing hair, reading an ancient tome, surrounded by floating books, illuminating runes, and curious magical creatures, depicted in Anime style, with soft, radiant glows, intricately patterned magical symbols, and the girl's expressive eyes capturing a sense of wonder.";
         additionalTextForCard = "Additional text for Card 4."; //moon girl
         break;
-      case 6:
-        cardContent =
-          "Medieval Castle, standing tall on a hill, surrounded by a moat, with banners flying and a drawbridge leading to it, evoking feelings of chivalry and bygone eras, designed in Low Poly style, with angular structures, flat color regions, and clear geometric definitions without intricate carvings.";
+        case 6:
+        cardContent = "Medieval Castle, standing tall on a hill, surrounded by a moat, with banners flying and a drawbridge leading to it, evoking feelings of chivalry and bygone eras, designed in Low Poly style, with angular structures, flat color regions, and clear geometric definitions without intricate carvings.";
         additionalTextForCard = "Additional text for Card 4."; //castle
         break;
-      case 7:
-        cardContent =
-          "Tropical Resort, bungalows over clear waters, palm trees, sunbathers on sandy beaches, rendered in Isometric style.";
+        case 7:
+        cardContent = "Tropical Resort, bungalows over clear waters, palm trees, sunbathers on sandy beaches, rendered in Isometric style.";
         additionalTextForCard = "Additional text for Card 4."; //beach
         break;
-      case 8:
-        cardContent =
-          "WATERCOLOR, Flamenco dancer in mid-twirl, vivid reds and blacks of her attire, passion captured in her posture, warm oranges and yellows of stage lights, on high-quality watercolor paper, intense and dynamic, movement captured in swirling colors, inspired by Spanish traditions, energetic, ruffles of the dress given depth by color layering, spontaneous brushwork, with audience shadows hinted in background, dramatic, expressive, with splatters to emphasize the raw emotion.";
+        case 8:
+        cardContent = "WATERCOLOR, Flamenco dancer in mid-twirl, vivid reds and blacks of her attire, passion captured in her posture, warm oranges and yellows of stage lights, on high-quality watercolor paper, intense and dynamic, movement captured in swirling colors, inspired by Spanish traditions, energetic, ruffles of the dress given depth by color layering, spontaneous brushwork, with audience shadows hinted in background, dramatic, expressive, with splatters to emphasize the raw emotion.";
         additionalTextForCard = "Additional text for Card 4."; //dancing dress women
         break;
-
+  
       default:
         break;
     }
-
+  
     setModalContent(cardContent);
     setAdditionalText(additionalTextForCard);
     setModalOpen(true);
   };
 
   return (
+   
+    
     <div className="container mt-5">
-      <Navbar />
+      <Navbar/>
 
       {/* Left card with text area and Generate Image button */}
       <div className="card p-4 mt-3">
@@ -189,60 +194,24 @@ const Model1 = () => {
           <p>Unleash your creativity with Axiom Mind's image generation.</p>
           <p>Become the artist you always wanted to be.</p>
           <div className="card p-4 mt-3">
-            <h2 className="mb-4">FEW TIPS</h2>
+      <h2 className="mb-4">FEW TIPS</h2>
 
-            <p>
-              1. Use simple and common words like king, queen, knight, wizard,
-              dragon.
-            </p>
+      <p>1. Use simple and common words like king, queen, knight, wizard, dragon.</p>
 
-            <p>
-              2. Your phrase needs to be specific. Take the “A rainbow-coloured
-              butterfly flying across a field of flowers during a sunset” phrase
-              as an example.
-            </p>
+      <p>2. Your phrase needs to be specific. Take the “A rainbow-coloured butterfly flying across a field of flowers during a sunset” phrase as an example.</p>
 
-            <p>
-              3. Ensure you combine adjectives that best describe the image you
-              want. Words like “Beautiful, colourful, detailed, intricate,
-              massive, powerful”.
-            </p>
+      <p>3. Ensure you combine adjectives that best describe the image you want. Words like “Beautiful, colourful, detailed, intricate, massive, powerful”.</p>
 
-            <p>
-              4. If you want an art style, add the name of an artist. Names like
-              Vincent Van Gogh, Picasso, Salvador Dali, M.C. Escher.
-            </p>
+      <p>4. If you want an art style, add the name of an artist. Names like Vincent Van Gogh, Picasso, Salvador Dali, M.C. Escher.</p>
 
-            <p>
-              5. Illustrate the style you want. Words like “Abstract,
-              Contemporary, Cubism, Cyberpunk, Fantasy, Impressionism, Minimal,
-              Modern, Realism, Surrealism” will help.
-            </p>
+      <p>5. Illustrate the style you want. Words like “Abstract, Contemporary, Cubism, Cyberpunk, Fantasy, Impressionism, Minimal, Modern, Realism, Surrealism” will help.</p>
 
-            <p>
-              6. For a more accurate result, be specific with the computer
-              graphics type like Octane render, Unreal Engine, and Ray tracing.
-            </p>
+      <p>6. For a more accurate result, be specific with the computer graphics type like Octane render, Unreal Engine, and Ray tracing.</p>
+      
+      <p>7. Share with others be creative and most importantly enjoy and have fun!</p>
+    </div>
 
-            <p>
-              7. Share with others be creative and most importantly enjoy and
-              have fun!
-            </p>
-          </div>
         </div>
-
-
-        <div className="card p-4 mt-3 text-center">
-            <h2 className="mb-4">Using Model:</h2>
-
-            <p>
-              model description ......
-            
-            </p>
-
-           
-            
-          </div>
 
         <div className="form-group">
           <label
@@ -262,25 +231,26 @@ const Model1 = () => {
           />
         </div>
 
-        <div className="d-flex justify-content-between mt-3">
-          {/* Button to generate image */}
-          <button
-            className="btn btn-primary"
-            style={{ height: "60px", width: "150px", marginLeft: "400px" }}
-            onClick={generateImage}
-          >
-            Generate Image
-          </button>
 
-          {/* Button to generate images with predetermined prompts */}
-          <button
-            className="btn btn-secondary"
-            style={{ height: "60px", width: "250px", marginRight: "420px" }}
-            onClick={generateRandomPrompt}
-          >
-            Generate Random Prompt (Professional)
-          </button>
-        </div>
+        <div className="d-flex justify-content-between mt-3">
+  {/* Button to generate image */}
+  <button
+    className="btn btn-primary"
+    style={{ height: "60px", width: "150px", marginLeft:"400px" }}
+    onClick={generateImage}
+  >
+    Generate Image
+  </button>
+
+  {/* Button to generate images with predetermined prompts */}
+  <button
+    className="btn btn-secondary"
+    style={{ height: "60px", width: "250px", marginRight: "420px" }}
+    onClick={generateRandomPrompt}
+  >
+    Generate Random Prompt (Professional)
+  </button>
+</div>
 
         {/* Error message display */}
         {error && (
@@ -289,33 +259,46 @@ const Model1 = () => {
           </div>
         )}
 
-        {/* Loading spinner */}
-        {isLoading && (
-          <div className="d-flex justify-content-center align-items-center">
-            <div
-              className="spinner-border text-primary"
-              style={{ width: "8rem", height: "8rem" }}
-              role="status"
-            >
-              <span className="sr-only">Loading...</span>
-            </div>
+         {/* Loading spinner */}
+{isLoading && (
+  <div className="d-flex justify-content-center align-items-center">
+    <div className="spinner-border text-primary" style={{ width: "8rem", height: "8rem" }} role="status">
+      <span className="sr-only">Loading...</span>
+    </div>
+  </div>
+)}
+
+{/* Generation time display */}
+{generationTime && (
+          <div className="mt-3">
+            <p>Generation Time: {`${(generationTime / 1000).toFixed(3)}s`}</p>
           </div>
         )}
+
+
+
 
         {/* Generated Image display */}
         {generatedImage && (
           <div className="mt-3">
+            
             <h2>Generated Image:</h2>
+            
             <div className="card">
-              <img
-                src={generatedImage}
-                alt="Generated"
-                className="card-img-top img-fluid"
-              />
+            <img
+              src={generatedImage}
+              alt="Generated"
+              style={{
+                width: '100%',
+                height: 'auto',
+                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)', // Add box shadow
+              }}
+            />
               <div className="card-body">
                 <p className="card-text">
                   Download and Share with Your Friends.
                 </p>
+                
                 <button
                   className="btn btn-success mr-2"
                   onClick={handleDownload}
@@ -345,6 +328,8 @@ const Model1 = () => {
             </div>
           </div>
         </div>
+
+        
 
         {/* Card 2 */}
         <div className="col-md-3">
@@ -477,7 +462,11 @@ const Model1 = () => {
             </div>
           </div>
         </div>
+
+        
       </div>
+
+      
 
       {/* Bootstrap modal */}
       <div
@@ -487,12 +476,9 @@ const Model1 = () => {
         style={{ display: isModalOpen ? "block" : "none" }}
       >
         <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div
-              className="modal-header"
-              style={{ background: "black", color: "white" }}
-            >
-              <h5 className="modal-title">Prompt Used For the Image</h5>
+          <div className="modal-content" >
+            <div className="modal-header" style={{background:"black",color:"white"}}>
+              <h5 className="modal-title" >Prompt Used For the Image</h5>
               <button
                 type="button"
                 className="close"
@@ -525,4 +511,4 @@ const Model1 = () => {
   );
 };
 
-export default Model1;
+export default ImageGenerator;
