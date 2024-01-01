@@ -57,7 +57,7 @@ const Land = () => {
             <li key={index} className={index === currentSlide ? 'current' : ''}>
               <div className="image" style={{ backgroundImage: `url(${image.url})` }}></div>
               <div className="content">
-                <h2 style={{ maxWidth: '400px',marginLeft:"1000px" }}>{image.text}</h2>
+                <h2 style={{ maxWidth: '600px',marginLeft:"1300px" }}>{image.text}</h2>
               </div>
             </li>
           ))}

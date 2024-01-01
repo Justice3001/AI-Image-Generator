@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Navbar from "../component/nav";
-import girl from "../../../../public/assests/girl.webp";
+import girl from "../../../../public/assests/girl.webp"; 
 import boat from "../../../../public/assests/boat.webp";
 
 const Model1 = () => {
@@ -13,18 +13,21 @@ const Model1 = () => {
   const [additionalText, setAdditionalText] = useState("");
   const [isLoading, setLoading] = useState(false); // Added loading state
 
+ 
+
   const generateRandomPrompt = () => {
     const randomIndex = Math.floor(Math.random() * predeterminedPrompts.length);
     setPrompt(predeterminedPrompts[randomIndex]);
   };
 
   const generateImage = async () => {
-    const url = "https://api.segmind.com/v1/sdxl1.0-samaritan-3d";
-    setLoading(true); 
-
+   
+    const url = "https://api.segmind.com/v1/ramsrigouthamg-lora-dog-SSD-1B";
+    setLoading(true); // Set loading to true when generating image
+  
     // Record the start time
     const startTime = new Date().getTime();
-
+  
     // Request payload
     const data = {
       prompt: prompt,
@@ -39,23 +42,23 @@ const Model1 = () => {
       img_height: "1024",
       base64: false,
     };
-
+  
     try {
       const response = await axios.post(url, data, {
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": "SG_b7bb2a720c61dc53", 
+          "x-api-key": "SG_b7bb2a720c61dc53", // Include the API key in the headers
         },
         responseType: "arraybuffer", // specify the expected response type as arraybuffer
       });
-
+  
       // Record the end time
       const endTime = new Date().getTime();
-
+  
       // Calculate the time difference
       const elapsedTime = endTime - startTime;
       console.log(`Image generation took ${elapsedTime} milliseconds`);
-
+  
       // Convert the array buffer to base64
       const base64Image = btoa(
         new Uint8Array(response.data).reduce(
@@ -63,7 +66,7 @@ const Model1 = () => {
           ""
         )
       );
-
+  
       setGeneratedImage(`data:image/jpeg;base64,${base64Image}`);
       setError(null); // Reset error state if the request is successful
     } catch (error) {
@@ -72,6 +75,7 @@ const Model1 = () => {
       setLoading(false); // Set loading to false when the request is complete
     }
   };
+  
 
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -108,6 +112,7 @@ const Model1 = () => {
         additionalTextForCard = "Additional text for Card 4."; //fox
         break;
       // Add more cases for additional cards if needed
+     
 
       default:
         break;
@@ -171,19 +176,22 @@ const Model1 = () => {
           </div>
         </div>
 
-        <div className="card p-4 mt-3 text-center">
-          <h2 className="mb-4">Using Model: Samaritan 3D XL</h2>
 
-          <p>
-            3D Cartoon Character Creation : Specializes in generating cute and
-            expressive cartoon characters in 3D. Emotional Range:Capable of
-            depicting a wide variety of emotions, adding depth and personality
-            to characters. High-Quality Rendering: Produces detailed and
-            visually appealing 3D characters, thanks to its SDXL base. Creative
-            Flexibility: Offers endless possibilities for character design and
-            storytelling.
-          </p>
-        </div>
+        <div className="card p-4 mt-3 text-center">
+            <h2 className="mb-4">Using Model: LoRA Dog SSD-1B</h2>
+
+            <p>
+            Photorealistic Dog Imagery: Expertly generates images of dogs that are strikingly realistic and detailed.
+
+Breed-Specific Precision:Trained on a diverse range of dog breeds for nuanced and accurate representation.
+
+Versatile Applications: Suitable for various uses, from pet photography enhancement to creative dog-themed art.
+            
+            </p>
+
+           
+            
+          </div>
 
         <div className="form-group">
           <label
@@ -343,11 +351,19 @@ const Model1 = () => {
           </div>
         </div>
 
-        <div className="col-md-3"></div>
+        <div className="col-md-3">
+          
+        </div>
 
-        <div className="col-md-3"></div>
+        <div className="col-md-3">
+          
+        </div>
 
-        <div className="col-md-3"></div>
+        
+
+        <div className="col-md-3">
+          
+        </div>
       </div>
 
       {/* Bootstrap modal */}
