@@ -1,0 +1,17 @@
+body {
+  transition: background-color 0.2s, color 0.2s;
+}
+
+[data-bs-theme="dark"] .card.bg-light {
+  background-color: #1e1e1e !important;
+  border-color: #333 !important;
+}
+
+[data-bs-theme="dark"] .text-muted {
+  color: #aaa !important;
+}
+
+.history-img {
+  height: 200px;
+  object-fit: cover;
+}
